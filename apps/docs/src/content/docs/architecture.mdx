@@ -1,0 +1,33 @@
+---
+title: Arquitectura
+---
+
+## Capas
+
+### `packages/core`
+
+- Dominio: tipos de factura, anulacion, consulta y QR.
+- Application: mapeo de entrada/salida, huella y casos de uso.
+- Infrastructure: XML builders/parsers, SOAP envelope, transporte `undici`, mTLS.
+- Errors: taxonomia de errores internos + errores de AEAT.
+
+### `apps/api`
+
+- Hono + `@hono/zod-openapi`.
+- Validacion de payload con Zod.
+- Adaptador HTTP sobre el core sin duplicar logica fiscal.
+
+## Flujo tecnico (emision)
+
+1. Entrada JSON tipada (`IssueInvoiceInput`).
+2. Normalizacion + calculo de huella (SHA-256).
+3. Construccion XML de `RegistroAlta` y SOAP envelope.
+4. Envio por `undici` (opcionalmente con certificado mTLS).
+5. Parseo XML de respuesta y mapeo a `IssueInvoiceResult`.
+
+## Principios de diseno
+
+- API publica pequena y estable.
+- Complejidad de XML encapsulada.
+- Trazabilidad de errores para debugging rapido.
+- Test fixtures SOAP para comportamiento reproducible.

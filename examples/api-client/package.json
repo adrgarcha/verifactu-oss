@@ -1,0 +1,14 @@
+{
+  "name": "@verifactu-oss/example-api-client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "biome check src",
+    "format": "biome format --write src",
+    "test": "bun test"
+  }
+}

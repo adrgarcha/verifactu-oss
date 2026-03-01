@@ -1,0 +1,22 @@
+---
+title: Modelo de errores
+---
+
+## Taxonomia
+
+- `TRANSPORT_ERROR`: fallo de red/timeout.
+- `XML_PARSE_ERROR`: no se pudo parsear XML.
+- `INVALID_XML`: estructura de respuesta no esperada.
+- `CLIENT_ERROR`: error funcional (SOAP Fault o validacion AEAT).
+- `SERVER_ERROR`: error 5xx en upstream AEAT.
+
+## Errores de resultado vs excepciones
+
+- Operaciones como emision/anulacion devuelven arrays `success[]/error[]`.
+- Errores de transporte graves lanzan excepciones tipadas (`TransportError`, `AeatError`).
+
+## Recomendacion de manejo
+
+1. Loggear `requestId` en API y trazas de negocio.
+2. Diferenciar reintentos de errores funcionales.
+3. Persistir `codError` y `descrError` para auditoria.

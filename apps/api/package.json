@@ -1,0 +1,20 @@
+{
+  "name": "@verifactu-oss/api",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "biome check src test",
+    "format": "biome format --write src test",
+    "test": "rm -rf dist/test && bun test"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "^1.1.5",
+    "@verifactu-oss/core": "workspace:*",
+    "hono": "^4.10.4",
+    "zod": "^3.25.76"
+  }
+}

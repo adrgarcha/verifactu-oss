@@ -1,0 +1,28 @@
+---
+title: Consultar facturas
+---
+
+## Caso de uso
+
+`queryInvoices(client, input)` consulta registros por filtros.
+
+```ts
+import { queryInvoices } from "@verifactu-oss/core";
+
+const result = await queryInvoices(client, {
+  companyName: "Acme SL",
+  issuerNif: "B12345678",
+  filters: {
+    year: 2026,
+    month: 2,
+    serialNumber: "A-0001",
+  },
+});
+```
+
+## Resultado
+
+- `success: true` con `invoices[]`
+- `success: false` con `error.code` y `error.message`
+
+En `apps/api`, los errores de consulta se devuelven con HTTP `502`.

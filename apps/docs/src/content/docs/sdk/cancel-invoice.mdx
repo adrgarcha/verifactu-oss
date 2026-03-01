@@ -1,0 +1,26 @@
+---
+title: Anular factura
+---
+
+## Caso de uso
+
+`cancelInvoice(client, input)` registra un `RegistroAnulacion`.
+
+```ts
+import { cancelInvoice } from "@verifactu-oss/core";
+
+const result = await cancelInvoice(client, {
+  id: "INV-001",
+  companyName: "Acme SL",
+  issuerNif: "B12345678",
+  numSerieFactura: "A-0001",
+  date: new Date("2026-02-01"),
+  total: 121,
+  tvat: 21,
+});
+```
+
+## Notas
+
+- Reutiliza el mismo modelo de salida que emision (`success[]` y `error[]`).
+- Puedes incluir `lastInvoice` para encadenamiento.

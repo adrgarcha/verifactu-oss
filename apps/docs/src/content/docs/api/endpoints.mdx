@@ -1,0 +1,60 @@
+---
+title: Endpoints
+---
+
+## Health
+
+### `GET /health`
+
+Respuesta:
+
+```json
+{
+  "ok": true,
+  "requestId": "..."
+}
+```
+
+## Emision
+
+### `POST /v1/invoices/issue`
+
+Body minimo:
+
+```json
+{
+  "id": "INV-001",
+  "companyName": "Acme SL",
+  "issuerNif": "B12345678",
+  "numSerieFactura": "A-0001",
+  "date": "2026-02-01",
+  "total": 121,
+  "tvat": 21,
+  "invoiceType": "F1",
+  "description": "Factura de prueba",
+  "vatLines": [{ "vat": 21, "bi": 100, "tvat": 21 }]
+}
+```
+
+## Anulacion
+
+### `POST /v1/invoices/cancel`
+
+Mismo contrato de salida que emision.
+
+## Consulta
+
+### `POST /v1/invoices/query`
+
+- `200` cuando `success: true`
+- `502` cuando `success: false`
+
+## QR
+
+### `POST /v1/invoices/qr`
+
+Devuelve `validationUrl`, `base64` y `pngBase64`.
+
+## Contrato OpenAPI
+
+`GET /openapi.json` genera el contrato completo de forma automatica.

@@ -1,0 +1,22 @@
+---
+title: SOAP envelope
+---
+
+El core encapsula la construccion del SOAP envelope en un unico punto para evitar duplicidad.
+
+## Estructura
+
+1. `Header` vacio.
+2. `Body` con operacion (`RegFactuSistemaFacturacion` o `ConsultaFactuSistemaFacturacion`).
+3. Namespaces oficiales en el envelope.
+
+## Beneficios
+
+- Menos riesgo de XML mal formado.
+- Trazabilidad clara en tests de builders.
+- Facil evolucion cuando cambien XSDs.
+
+## Referencias de implementacion
+
+- `packages/core/src/infrastructure/soap/envelope.builder.ts`
+- `packages/core/src/infrastructure/soap/namespaces.ts`

@@ -1,0 +1,32 @@
+---
+title: Inicio
+---
+
+Verifactu OSS es un wrapper open source en TypeScript para simplificar la integracion de Verifactu (AEAT) sin perder transparencia de como funciona por dentro.
+
+## Objetivo
+
+- Reducir la complejidad de SOAP/XML para integradores.
+- Exponer una API de alto nivel (`issue`, `cancel`, `query`, `qr`) estable.
+- Mantener trazabilidad entre `input -> XML -> respuesta AEAT -> output`.
+
+## Componentes del monorepo
+
+- `packages/core`: SDK principal publicable (`@verifactu-oss/core`).
+- `apps/api`: wrapper HTTP con Hono sobre el SDK.
+- `apps/docs`: esta documentacion (Astro + Starlight).
+- `examples`: ejemplos ejecutables de integracion.
+
+## Requisitos
+
+- Bun >= 1.2
+- Certificado cliente para entorno real de AEAT
+
+## Arranque rapido del monorepo
+
+```bash
+bun install
+bun run dev
+```
+
+Siguiente paso recomendado: revisa [Quickstart](/quickstart/) y despues la seccion [SDK](/sdk/installation/).

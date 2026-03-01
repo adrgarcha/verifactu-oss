@@ -1,0 +1,24 @@
+---
+title: Instalacion
+---
+
+## Dependencia
+
+```bash
+bun add @verifactu-oss/core
+```
+
+## Import minimo
+
+```ts
+import { createVerifactuClient } from "@verifactu-oss/core";
+```
+
+## Runtime
+
+- Soportado: Bun y Node.js moderno.
+- Recomendado para este repo: Bun.
+
+## Certificados
+
+Para AEAT real, configura certificado cliente en un `CertificateProvider` (por ejemplo `FileCertificateProvider`).

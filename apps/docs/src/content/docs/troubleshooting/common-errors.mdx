@@ -1,0 +1,33 @@
+---
+title: Errores comunes
+---
+
+## `CLIENT_ERROR`
+
+Suele indicar rechazo funcional de AEAT (datos invalidos o SOAP Fault).
+
+Accion:
+
+1. Revisa `codError` y `descrError`.
+2. Corrige datos de factura (NIF, serie, fechas, importes).
+3. Reenvia solo cuando el problema este corregido.
+
+## `TRANSPORT_ERROR`
+
+Fallo de red, timeout o TLS.
+
+Accion:
+
+1. Verifica conectividad y endpoint.
+2. Revisa certificado cliente y CA.
+3. Aplica reintentos con backoff.
+
+## `XML_PARSE_ERROR` / `INVALID_XML`
+
+Respuesta inesperada del upstream.
+
+Accion:
+
+1. Guarda body original para auditoria.
+2. Verifica cambios de formato en entorno AEAT.
+3. Abre incidencia si el body no cumple contrato esperado.

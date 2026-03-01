@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Body>
+    <RespuestaRegFactuSistemaFacturacion>
+      <CSV>CSV-ISSUE-ERR</CSV>
+      <DatosPresentacion>
+        <TimestampPresentacion>2026-02-01T10:20:00+01:00</TimestampPresentacion>
+      </DatosPresentacion>
+      <RespuestaLinea>
+        <IDFactura>
+          <NumSerieFactura>A-0002</NumSerieFactura>
+        </IDFactura>
+        <CodigoErrorRegistro>2001</CodigoErrorRegistro>
+        <DescripcionErrorRegistro>NIF del emisor incorrecto</DescripcionErrorRegistro>
+        <EstadoRegistro>Incorrecto</EstadoRegistro>
+      </RespuestaLinea>
+    </RespuestaRegFactuSistemaFacturacion>
+  </soapenv:Body>
+</soapenv:Envelope>

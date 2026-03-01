@@ -1,0 +1,35 @@
+---
+title: Enviar factura
+---
+
+## Caso de uso
+
+`issueInvoice(client, input)` registra un `RegistroAlta` en Verifactu.
+
+```ts
+import { createVerifactuClient, issueInvoice } from "@verifactu-oss/core";
+
+const client = createVerifactuClient({ environment: "sandbox" });
+
+const result = await issueInvoice(client, {
+  id: "INV-001",
+  companyName: "Acme SL",
+  issuerNif: "B12345678",
+  numSerieFactura: "A-0001",
+  date: new Date("2026-02-01"),
+  total: 121,
+  tvat: 21,
+  invoiceType: "F1",
+  description: "Factura de prueba",
+  vatLines: [{ vat: 21, bi: 100, tvat: 21 }],
+});
+```
+
+## Resultado
+
+- `success[]`: registros aceptados por AEAT.
+- `error[]`: registros rechazados con `codError` y `descrError`.
+
+## Transparencia del flujo
+
+El SDK calcula huella, genera XML SOAP y mapea respuesta AEAT a JSON estable para tu aplicacion.

@@ -1,0 +1,26 @@
+---
+title: Invoice chain
+---
+
+La huella de encadenamiento conecta cada registro con el anterior para garantizar integridad.
+
+## Que se usa para la huella
+
+- NIF emisor
+- Serie y numero
+- Fecha
+- Importe total
+- Huella anterior (si existe)
+- Timestamp y tipo de evento
+
+La salida es SHA-256 en hexadecimal mayuscula.
+
+## Casos
+
+- Primer registro: marca `PrimerRegistro`.
+- Registros siguientes: incluye `RegistroAnterior`.
+
+## Referencias de implementacion
+
+- `packages/core/src/application/mappers/request-mapper.ts`
+- `packages/core/src/utils/hash.ts`

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Body>
+    <RespuestaConsultaFactuSistemaFacturacion>
+      <RegistroRespuestaConsultaFactuSistemaFacturacion>
+        <IDFactura>
+          <IDEmisorFactura>
+            <NIF>B12345678</NIF>
+          </IDEmisorFactura>
+          <NumSerieFactura>A-0001</NumSerieFactura>
+          <FechaExpedicionFactura>01-02-2026</FechaExpedicionFactura>
+        </IDFactura>
+      </RegistroRespuestaConsultaFactuSistemaFacturacion>
+      <RegistroRespuestaConsultaFactuSistemaFacturacion>
+        <IDFactura>
+          <IDEmisorFactura>
+            <NIF>B12345678</NIF>
+          </IDEmisorFactura>
+          <NumSerieFactura>A-0002</NumSerieFactura>
+          <FechaExpedicionFactura>02-02-2026</FechaExpedicionFactura>
+        </IDFactura>
+      </RegistroRespuestaConsultaFactuSistemaFacturacion>
+    </RespuestaConsultaFactuSistemaFacturacion>
+  </soapenv:Body>
+</soapenv:Envelope>

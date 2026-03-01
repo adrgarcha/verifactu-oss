@@ -1,0 +1,26 @@
+---
+title: Generar QR
+---
+
+## Caso de uso
+
+`generateQr(client, input)` genera URL de validacion y QR en Base64/PNG.
+
+```ts
+import { generateQr } from "@verifactu-oss/core";
+
+const qr = await generateQr(client, {
+  issuerNif: "B12345678",
+  numSerieFactura: "A-0001",
+  date: new Date("2026-02-01"),
+  total: 121,
+});
+
+console.log(qr.validationUrl);
+```
+
+## Resultado
+
+- `validationUrl`: URL oficial de verificacion.
+- `base64`: data URL para frontends.
+- `png`: `Buffer` para almacenamiento/adjuntos.

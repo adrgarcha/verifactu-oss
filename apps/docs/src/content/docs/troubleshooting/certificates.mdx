@@ -1,0 +1,34 @@
+---
+title: Certificados
+---
+
+## Requisitos mTLS
+
+Para entornos reales debes presentar certificado cliente valido.
+
+## Configuracion recomendada
+
+```ts
+import { FileCertificateProvider, createVerifactuClient } from "@verifactu-oss/core";
+
+const client = createVerifactuClient({
+  environment: "production",
+  certificateProvider: new FileCertificateProvider("./cert.pem", "./key.pem", {
+    caPath: "./ca.pem",
+    rejectUnauthorized: true,
+  }),
+});
+```
+
+## Errores tipicos
+
+- Ruta de certificado incorrecta.
+- Clave privada no corresponde al certificado.
+- CA faltante o no confiable.
+- `rejectUnauthorized` mal configurado en entornos con CA propia.
+
+## Buenas practicas
+
+- No commitear claves privadas.
+- Rotar certificados antes de caducidad.
+- Probar siempre en sandbox antes de production.

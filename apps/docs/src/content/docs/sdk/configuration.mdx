@@ -1,0 +1,33 @@
+---
+title: Configuracion
+---
+
+## Opciones del cliente
+
+```ts
+const client = createVerifactuClient({
+  environment: "sandbox", // "sandbox" | "production"
+  endpoint: "https://...", // opcional
+  timeoutMs: 30_000,
+  certificateProvider, // opcional pero necesario en integraciones reales
+});
+```
+
+## Certificado desde archivos
+
+```ts
+import { FileCertificateProvider } from "@verifactu-oss/core";
+
+const certificateProvider = new FileCertificateProvider("./cert.pem", "./cert_key.pem", {
+  caPath: "./ca.pem",
+  rejectUnauthorized: true,
+});
+```
+
+## Configuracion en `apps/api`
+
+- `VERIFACTU_ENV`: `sandbox` o `production`
+- `VERIFACTU_ENDPOINT`: override de endpoint
+- `VERIFACTU_TIMEOUT_MS`: timeout total
+- `VERIFACTU_CERT_PATH`, `VERIFACTU_KEY_PATH`, `VERIFACTU_CA_PATH`
+- `VERIFACTU_REJECT_UNAUTHORIZED`: `true`/`false`

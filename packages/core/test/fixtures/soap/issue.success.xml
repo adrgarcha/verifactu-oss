@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Body>
+    <RespuestaRegFactuSistemaFacturacion>
+      <CSV>CSV-ISSUE-001</CSV>
+      <TiempoEsperaEnvio>0</TiempoEsperaEnvio>
+      <DatosPresentacion>
+        <TimestampPresentacion>2026-02-01T10:15:30+01:00</TimestampPresentacion>
+      </DatosPresentacion>
+      <RespuestaLinea>
+        <IDFactura>
+          <NumSerieFactura>A-0001</NumSerieFactura>
+        </IDFactura>
+        <CodigoErrorRegistro>0</CodigoErrorRegistro>
+        <DescripcionErrorRegistro />
+        <EstadoRegistro>Correcto</EstadoRegistro>
+      </RespuestaLinea>
+    </RespuestaRegFactuSistemaFacturacion>
+  </soapenv:Body>
+</soapenv:Envelope>

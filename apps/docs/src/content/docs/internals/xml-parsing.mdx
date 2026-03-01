@@ -1,0 +1,23 @@
+---
+title: XML parsing
+---
+
+El parser XML usa `fast-xml-parser` con opciones estables para SOAP.
+
+## Estrategia
+
+- `removeNSPrefix: true` para navegar sin prefijos.
+- Atributos preservados cuando sean necesarios.
+- Mapeo a resultados de dominio con fallback seguro.
+
+## Comportamientos cubiertos
+
+- Respuesta valida con `RespuestaLinea`.
+- `soap:Fault` mapeado a `CLIENT_ERROR`.
+- XML invalido mapeado a `XML_PARSE_ERROR`.
+
+## Referencias de implementacion
+
+- `packages/core/src/infrastructure/xml/parser.ts`
+- `packages/core/src/application/mappers/response-mapper.ts`
+- Fixtures: `packages/core/test/fixtures/soap/*.xml`

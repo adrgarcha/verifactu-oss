@@ -1,0 +1,26 @@
+---
+title: API overview
+---
+
+`apps/api` expone un contrato HTTP limpio sobre `@verifactu-oss/core`.
+
+## Caracteristicas
+
+- Hono + Zod OpenAPI.
+- Validacion de payload en entrada.
+- `x-request-id` en respuesta para trazabilidad.
+- OpenAPI en `/openapi.json`.
+
+## Arranque
+
+```bash
+bun run api:dev
+```
+
+## Endpoints base
+
+- `GET /health`
+- `POST /v1/invoices/issue`
+- `POST /v1/invoices/cancel`
+- `POST /v1/invoices/query`
+- `POST /v1/invoices/qr`

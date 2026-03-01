@@ -1,0 +1,53 @@
+---
+title: Quickstart
+---
+
+## 1) Instala dependencias
+
+```bash
+bun install
+```
+
+## 2) Ejecuta el API wrapper
+
+```bash
+bun run api:dev
+```
+
+API disponible en `http://localhost:3000`.
+
+- OpenAPI: `http://localhost:3000/openapi.json`
+- Health: `GET /health`
+
+## 3) Integra el SDK directamente
+
+```ts
+import { createVerifactuClient, issueInvoice } from "@verifactu-oss/core";
+
+const client = createVerifactuClient({
+  environment: "sandbox",
+});
+
+const result = await issueInvoice(client, {
+  id: "INV-001",
+  companyName: "Acme SL",
+  issuerNif: "B12345678",
+  numSerieFactura: "A-0001",
+  date: new Date(),
+  total: 121,
+  tvat: 21,
+  invoiceType: "F1",
+  description: "Factura de prueba",
+  vatLines: [{ vat: 21, bi: 100, tvat: 21 }],
+});
+
+console.log(result);
+```
+
+## 4) Ejecuta calidad
+
+```bash
+bun run check
+bun run typecheck
+bun run test
+```
