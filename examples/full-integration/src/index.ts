@@ -1,64 +1,142 @@
 import {
   createVerifactuClient,
-  generateQr,
+  generateQr as generateQrFromCore,
   type QueryInvoicesInput,
-  queryInvoices,
+  queryInvoices as queryInvoicesFromCore,
 } from "@verifactu-oss/core";
 
-const API_BASE_URL = process.env.API_BASE_URL ?? "http://localhost:3000";
+type EnvLike = Record<string, string | undefined>;
 
-async function runSdkFlow() {
-  const client = createVerifactuClient({
-    environment: process.env.VERIFACTU_ENV === "production" ? "production" : "sandbox",
+type FullIntegrationEnv = EnvLike & {
+  API_BASE_URL?: string;
+  VERIFACTU_ENV?: string;
+  COMPANY_NAME?: string;
+  ISSUER_NIF?: string;
+  INVOICE_SERIAL?: string;
+  INVOICE_DATE?: string;
+  INVOICE_TOTAL?: string;
+  QUERY_YEAR?: string;
+  QUERY_MONTH?: string;
+  RUN_REMOTE_QUERY?: string;
+};
+
+type LoggerLike = {
+  info: (...args: unknown[]) => void;
+  error: (...args: unknown[]) => void;
+};
+
+type FetchLike = (url: string, init?: RequestInit) => Promise<Response>;
+
+type CoreDeps = {
+  createClient: (options: { environment: "sandbox" | "production" }) => unknown;
+  generateQr: (
+    client: unknown,
+    input: { issuerNif: string; numSerieFactura: string; date: Date; total: number },
+  ) => Promise<{ validationUrl: string; base64: string; png: Buffer }>;
+  queryInvoices: (client: unknown, input: QueryInvoicesInput) => Promise<unknown>;
+};
+
+type RunSdkFlowOptions = {
+  core: CoreDeps;
+  logger: LoggerLike;
+  env: FullIntegrationEnv;
+};
+
+type RunApiFlowOptions = {
+  fetch: FetchLike;
+  logger: LoggerLike;
+  env: FullIntegrationEnv;
+};
+
+type RunFullIntegrationFlowOptions = {
+  core?: CoreDeps;
+  fetch?: FetchLike;
+  logger?: LoggerLike;
+  env?: FullIntegrationEnv;
+};
+
+const defaultCoreDeps: CoreDeps = {
+  createClient: createVerifactuClient,
+  generateQr: (client, input) => generateQrFromCore(client as never, input),
+  queryInvoices: (client, input) => queryInvoicesFromCore(client as never, input),
+};
+
+export async function runSdkFlow(options: RunSdkFlowOptions): Promise<void> {
+  const environment = options.env.VERIFACTU_ENV === "production" ? "production" : "sandbox";
+
+  const client = options.core.createClient({ environment });
+
+  const qr = await options.core.generateQr(client, {
+    issuerNif: options.env.ISSUER_NIF ?? "B12345678",
+    numSerieFactura: options.env.INVOICE_SERIAL ?? "A-0001",
+    date: new Date(options.env.INVOICE_DATE ?? "2026-02-01"),
+    total: Number(options.env.INVOICE_TOTAL ?? 121),
   });
 
-  const qr = await generateQr(client, {
-    issuerNif: process.env.ISSUER_NIF ?? "B12345678",
-    numSerieFactura: process.env.INVOICE_SERIAL ?? "A-0001",
-    date: new Date(process.env.INVOICE_DATE ?? "2026-02-01"),
-    total: Number(process.env.INVOICE_TOTAL ?? 121),
-  });
-
-  console.info("[SDK] QR URL:", qr.validationUrl);
+  options.logger.info("[SDK] QR URL:", qr.validationUrl);
 
   const queryInput: QueryInvoicesInput = {
-    companyName: process.env.COMPANY_NAME ?? "Acme SL",
-    issuerNif: process.env.ISSUER_NIF ?? "B12345678",
+    companyName: options.env.COMPANY_NAME ?? "Acme SL",
+    issuerNif: options.env.ISSUER_NIF ?? "B12345678",
     filters: {
-      year: Number(process.env.QUERY_YEAR ?? 2026),
-      month: Number(process.env.QUERY_MONTH ?? 2),
-      serialNumber: process.env.INVOICE_SERIAL ?? "A-0001",
+      year: Number(options.env.QUERY_YEAR ?? 2026),
+      month: Number(options.env.QUERY_MONTH ?? 2),
+      serialNumber: options.env.INVOICE_SERIAL ?? "A-0001",
     },
   };
 
-  if (process.env.RUN_REMOTE_QUERY === "true") {
+  if (options.env.RUN_REMOTE_QUERY === "true") {
     try {
-      const queryResult = await queryInvoices(client, queryInput);
-      console.info("[SDK] Query result:", queryResult);
+      const queryResult = await options.core.queryInvoices(client, queryInput);
+      options.logger.info("[SDK] Query result:", queryResult);
     } catch (error) {
-      console.error("[SDK] Query failed", error);
+      options.logger.error("[SDK] Query failed", error);
     }
   } else {
-    console.info("[SDK] Skipping remote query (set RUN_REMOTE_QUERY=true to enable)");
+    options.logger.info("[SDK] Skipping remote query (set RUN_REMOTE_QUERY=true to enable)");
   }
 }
 
-async function runApiFlow() {
-  const response = await fetch(`${API_BASE_URL}/v1/invoices/qr`, {
+export async function runApiFlow(options: RunApiFlowOptions): Promise<void> {
+  const baseUrl = options.env.API_BASE_URL ?? "http://localhost:3000";
+
+  const response = await options.fetch(`${baseUrl}/v1/invoices/qr`, {
     method: "POST",
     headers: {
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      issuerNif: process.env.ISSUER_NIF ?? "B12345678",
-      numSerieFactura: process.env.INVOICE_SERIAL ?? "A-0001",
-      date: process.env.INVOICE_DATE ?? "2026-02-01",
-      total: Number(process.env.INVOICE_TOTAL ?? 121),
+      issuerNif: options.env.ISSUER_NIF ?? "B12345678",
+      numSerieFactura: options.env.INVOICE_SERIAL ?? "A-0001",
+      date: options.env.INVOICE_DATE ?? "2026-02-01",
+      total: Number(options.env.INVOICE_TOTAL ?? 121),
     }),
   });
 
-  console.info("[API] POST /v1/invoices/qr", response.status, await response.json());
+  options.logger.info("[API] POST /v1/invoices/qr", response.status, await response.json());
 }
 
-await runSdkFlow();
-await runApiFlow();
+export async function runFullIntegrationFlow(
+  options: RunFullIntegrationFlowOptions = {},
+): Promise<void> {
+  const env = options.env ?? process.env;
+  const logger = options.logger ?? console;
+  const core = options.core ?? defaultCoreDeps;
+  const fetchImpl = options.fetch ?? fetch;
+
+  await runSdkFlow({
+    core,
+    logger,
+    env,
+  });
+
+  await runApiFlow({
+    fetch: fetchImpl,
+    logger,
+    env,
+  });
+}
+
+if (import.meta.main) {
+  await runFullIntegrationFlow();
+}
