@@ -1,5 +1,4 @@
 import { createRoute } from "@hono/zod-openapi";
-import { queryInvoices } from "@verifactu-oss/core";
 
 import type { AppType } from "../app";
 import { getVerifactuClient } from "../config/client";
@@ -47,7 +46,7 @@ export function registerQueryRoute(app: AppType): void {
   app.openapi(route, async (c) => {
     const payload = c.req.valid("json");
     const client = getVerifactuClient();
-    const result = await queryInvoices(client, payload);
+    const result = await client.queryInvoices(payload);
 
     if (!result.success) {
       return c.json(result, 502);

@@ -1,14 +1,33 @@
 import {
+  type CancelInvoiceInput,
+  type CancelInvoiceResult,
   createVerifactuClient,
   FileCertificateProvider,
-  type VerifactuClient,
+  type IssueInvoiceInput,
+  type IssueInvoiceResult,
+  type QrInput,
+  type QrResult,
+  type QueryInvoicesInput,
+  type QueryInvoicesResult,
 } from "@verifactu-oss/core";
 
 import { getApiEnv } from "./env";
 
-let cachedClient: VerifactuClient | null = null;
+export type VerifactuClientAdapter = {
+  issueInvoice(input: IssueInvoiceInput): Promise<IssueInvoiceResult>;
+  cancelInvoice(input: CancelInvoiceInput): Promise<CancelInvoiceResult>;
+  queryInvoices(input: QueryInvoicesInput): Promise<QueryInvoicesResult>;
+  generateQr(input: QrInput): Promise<QrResult>;
+};
 
-export function getVerifactuClient(): VerifactuClient {
+let cachedClient: VerifactuClientAdapter | null = null;
+let overriddenClientForTests: VerifactuClientAdapter | null = null;
+
+export function getVerifactuClient(): VerifactuClientAdapter {
+  if (overriddenClientForTests) {
+    return overriddenClientForTests;
+  }
+
   if (cachedClient) {
     return cachedClient;
   }
@@ -35,4 +54,13 @@ export function getVerifactuClient(): VerifactuClient {
   });
 
   return cachedClient;
+}
+
+export function setVerifactuClientForTests(client: VerifactuClientAdapter | null): void {
+  overriddenClientForTests = client;
+}
+
+export function resetVerifactuClientCacheForTests(): void {
+  cachedClient = null;
+  overriddenClientForTests = null;
 }
