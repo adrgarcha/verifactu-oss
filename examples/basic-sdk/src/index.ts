@@ -1,23 +1,68 @@
-import { createVerifactuClient, generateQr } from "@verifactu-oss/core";
+import {
+  createVerifactuClient,
+  generateQr as generateQrFromCore,
+  type QrInput,
+  type QrResult,
+  type VerifactuEnvironment,
+} from "@verifactu-oss/core";
 
-async function main(): Promise<void> {
-  const client = createVerifactuClient({
-    environment: process.env.VERIFACTU_ENV === "production" ? "production" : "sandbox",
-  });
+type EnvLike = Record<string, string | undefined>;
 
-  const invoiceDate = new Date(process.env.INVOICE_DATE ?? "2026-02-01");
+export type BasicSdkEnv = EnvLike & {
+  VERIFACTU_ENV?: string;
+  ISSUER_NIF?: string;
+  INVOICE_SERIAL?: string;
+  INVOICE_DATE?: string;
+  INVOICE_TOTAL?: string;
+};
 
-  const result = await generateQr(client, {
-    issuerNif: process.env.ISSUER_NIF ?? "B12345678",
-    numSerieFactura: process.env.INVOICE_SERIAL ?? "A-0001",
-    date: invoiceDate,
-    total: Number(process.env.INVOICE_TOTAL ?? 121),
-  });
+export type BasicSdkInput = {
+  environment: VerifactuEnvironment;
+  qrInput: QrInput;
+};
 
-  console.info("QR generated");
-  console.info(`Validation URL: ${result.validationUrl}`);
-  console.info(`Data URL prefix: ${result.base64.slice(0, 40)}...`);
-  console.info(`PNG bytes: ${result.png.byteLength}`);
+type BasicSdkDeps = {
+  createClient: (options: { environment: VerifactuEnvironment }) => unknown;
+  generateQr: (client: unknown, input: QrInput) => Promise<QrResult>;
+  logger: {
+    info: (...args: unknown[]) => void;
+  };
+};
+
+export function buildBasicSdkInputFromEnv(env: BasicSdkEnv): BasicSdkInput {
+  return {
+    environment: env.VERIFACTU_ENV === "production" ? "production" : "sandbox",
+    qrInput: {
+      issuerNif: env.ISSUER_NIF ?? "B12345678",
+      numSerieFactura: env.INVOICE_SERIAL ?? "A-0001",
+      date: new Date(env.INVOICE_DATE ?? "2026-02-01"),
+      total: Number(env.INVOICE_TOTAL ?? 121),
+    },
+  };
 }
 
-await main();
+const defaultDeps: BasicSdkDeps = {
+  createClient: createVerifactuClient,
+  generateQr: (client, input) => generateQrFromCore(client as never, input),
+  logger: console,
+};
+
+export async function runBasicSdkFlow(
+  deps: BasicSdkDeps = defaultDeps,
+  env: BasicSdkEnv = process.env,
+): Promise<QrResult> {
+  const input = buildBasicSdkInputFromEnv(env);
+  const client = deps.createClient({ environment: input.environment });
+  const result = await deps.generateQr(client, input.qrInput);
+
+  deps.logger.info("QR generated");
+  deps.logger.info(`Validation URL: ${result.validationUrl}`);
+  deps.logger.info(`Data URL prefix: ${result.base64.slice(0, 40)}...`);
+  deps.logger.info(`PNG bytes: ${result.png.byteLength}`);
+
+  return result;
+}
+
+if (import.meta.main) {
+  await runBasicSdkFlow();
+}
