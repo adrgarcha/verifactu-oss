@@ -7,5 +7,11 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": [
+    "@verifactu-oss/api",
+    "@verifactu-oss/docs",
+    "@verifactu-oss/example-basic-sdk",
+    "@verifactu-oss/example-api-client",
+    "@verifactu-oss/example-full-integration"
+  ]
 }
